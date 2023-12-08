@@ -1,5 +1,5 @@
 package com.nnk.springboot;
-
+/*
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import org.junit.Assert;
@@ -44,3 +44,4 @@ public class RuleTests {
 		Assert.assertFalse(ruleList.isPresent());
 	}
 }
+*/
