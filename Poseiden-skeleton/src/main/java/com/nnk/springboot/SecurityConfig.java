@@ -15,7 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
+
 import com.nnk.springboot.service.CustomUserDetailsService;
+//import com.nnk.springboot.validation.PasswordConstraintValidator;
+
 
 @EnableWebSecurity
 @Configuration
@@ -37,7 +40,7 @@ public class SecurityConfig {
 	        .formLogin(form -> form
 	            .loginPage("/login")
 	            .loginProcessingUrl("/login")
-	            .usernameParameter("username") // Assurez-vous que cela correspond à votre formulaire de connexion
+	            .usernameParameter("username") 
 	            .passwordParameter("password")
 	            .defaultSuccessUrl("/home", true)
 	            .failureUrl("/login?error=true")
@@ -59,4 +62,9 @@ public class SecurityConfig {
 	    public PasswordEncoder passwordEncoder() {
 	        return new BCryptPasswordEncoder();
 	    }
+	    
+	  /* @Bean
+	    public PasswordConstraintValidator passwordConstraintValidator() {
+	        return new PasswordConstraintValidator();
+	    }*/
 }

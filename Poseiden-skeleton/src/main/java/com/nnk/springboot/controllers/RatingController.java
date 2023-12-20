@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
 public class RatingController {
@@ -92,7 +92,7 @@ public class RatingController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         Rating rating = ratingService.findById(id);
         if (rating == null) {
-            // Gérer le cas où le Rating n'est pas trouvé
+            
             return "redirect:/rating/list";
         }
         model.addAttribute("rating", rating);

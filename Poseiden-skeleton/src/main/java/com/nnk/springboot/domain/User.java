@@ -9,8 +9,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 */
 import java.util.HashSet;
+//import javax.validation.constraints.Pattern;
 import java.util.Set;
 
+//import com.nnk.springboot.validation.ValidPassword;
+//import javax.validation.constraints.Pattern;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +33,13 @@ public class User {
     private Integer id;
     @NotBlank(message = "Username is mandatory")
     private String username;
-    @NotBlank(message = "Password is mandatory")
+    
+    
+    
+    @NotBlank(message = "password is mandatory")
+    //@Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$",
+   // message = "password must contain at least 1 uppercase, 1 digit, 1 special character and 8 characters")
+    @com.nnk.springboot.ValidPassword
     private String password;
     @NotBlank(message = "FullName is mandatory")
     private String fullname;

@@ -13,32 +13,48 @@
         <!-- Message erreur -->
         <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-        <!-- Form inscription -->
-        <form th:action="@{/register}" th:object="${user}" method="post" class="w-50 mx-auto">
-            <div class="form-group mb-3">
-                <label for="username">Nom d'utilisateur:</label>
-                <input type="text" class="form-control" id="username" th:field="*{username}" required>
-            </div>
+       <!-- Form inscription -->
+<form th:action="@{/register}" th:object="${user}" method="post" class="w-50 mx-auto">
+    <!-- Champ Username -->
+    <div class="form-group mb-3">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" class="form-control" id="username" th:field="*{username}" required>
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+    </div>
 
-            <div class="form-group mb-3">
-                <label for="fullname">Nom complet:</label>
-                <input type="text" class="form-control" id="fullname" th:field="*{fullname}" required>
-            </div>
+    <!-- Champ FullName -->
+    <div class="form-group mb-3">
+        <label for="fullname">Nom complet:</label>
+        <input type="text" class="form-control" id="fullname" th:field="*{fullname}" required>
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></div>
+    </div>
 
-            <div class="form-group mb-3">
-                <label for="password">Mot de passe:</label>
-                <input type="password" class="form-control" id="password" th:field="*{password}" required>
-            </div>
+    <!-- Champ Password -->
+    <div class="form-group mb-3">
+        <label for="password">Mot de passe:</label>
+        <input type="password" class="form-control" id="password" th:field="*{password}" required>
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    </div>
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Inscrire</button>
-            </div>
-            
-            <!-- Lien connexion -->
-            <div class="text-center mt-3">
-                <a href="/login" class="btn btn-outline-primary">Déjà inscrit ? Connectez-vous</a>
-            </div>
-        </form>
+    <!-- Champ Role (à ajouter selon la nécessité de votre application) -->
+    <div class="form-group mb-3">
+        <label for="role">Rôle:</label>
+        <input type="text" class="form-control" id="role" th:field="*{role}" required>
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+    </div>
+
+    <!-- Bouton Soumettre -->
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Inscrire</button>
+    </div>
+
+    <!-- Lien Connexion -->
+    <div class="text-center mt-3">
+        <a href="/login" class="btn btn-outline-primary">Déjà inscrit ? Connectez-vous</a>
+    </div>
+</form>
+
+
     </div>
 </body>
 </html>

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import com.nnk.springboot.service.CurvePointService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,12 +34,11 @@ public class CurveController {
 	
 	 @RequestMapping("/curvePoint/list")
 	    public String home(Model model, HttpServletRequest request) {
-	        // Récupérer tous les points de courbe depuis le service
+	        
 	        List<CurvePoint> allCurvePoints = curvePointService.findAll();
 
-	        // Ajouter les points de courbe et la requête HTTP au modèle pour Thymeleaf
 	        model.addAttribute("curvePoints", allCurvePoints);
-	        model.addAttribute("httpServletRequest", request); // Ajouter cette ligne pour accéder à l'utilisateur connecté dans Thymeleaf
+	        model.addAttribute("httpServletRequest", request); 
 
 	        return "curvePoint/list";
 	    }
@@ -48,6 +47,7 @@ public class CurveController {
     public String addBidForm(CurvePoint bid) {
         return "curvePoint/add";
     }
+    
 
    /* @PostMapping("/curvePoint/validate")
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {

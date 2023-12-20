@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Table(name = "bidlist")
 public class BidList {
     // TODO: Map columns in data table BIDLIST with corresponding java fields
-	 @Id
+	    @Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Integer bidListId;
 
@@ -45,7 +45,7 @@ public class BidList {
 	    @Column(name = "bidListDate")
 	    private Timestamp bidListDate;
 
-	    @Column(name = "commentary")
+	    @Column(name = "comment-+ary")
 	    private String commentary;
 
 	    @Column(name = "security")

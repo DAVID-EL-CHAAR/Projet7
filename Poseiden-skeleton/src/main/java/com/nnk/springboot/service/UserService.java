@@ -34,8 +34,9 @@ public class UserService{
         User user = new User();
         user.setFullname(userDto.getFullname()); 
         user.setUsername(userDto.getUsername()); 
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        // user.setEnabled(true); // Omettre si vous ne l'utilisez pas
+     // user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(userDto.getPassword());
+        // user.setEnabled(true); 
         user.setRole("USER");
         return userRepository.save(user);
     }
@@ -43,6 +44,18 @@ public class UserService{
 
     public User findByUsername(String email) {
         return userRepository.findByUsername(email);
+    }
+    
+    public void saveUser (User user){
+        userRepository.save(user);
+    }
+    
+    public List<User> getUsers(){
+        return userRepository.findAll();
+    }
+    
+    public User getUserByUsername (String username) {
+        return userRepository.findByUsername(username);
     }
     
 }

@@ -1,13 +1,16 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.UserDto;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.nnk.springboot.repositories.UserRepository;
+import com.nnk.springboot.service.UserMapper;
 import com.nnk.springboot.service.UserService;
+import org.springframework.validation.annotation.Validated;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,12 +21,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class UserController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
     @Autowired
     private UserRepository userRepository;
     
@@ -31,18 +41,22 @@ public class UserController {
     private UserService userService;
     
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm( Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUserAccount(@ModelAttribute("user") User userDto, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+    public String registerUserAccount(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+    	logger.info("Méthode handleFormSubmit appelée");
+    	if (result.hasErrors()) {
+        	logger.error("Erreurs de validation détectées :");
+            result.getAllErrors().forEach(error -> logger.error(error.toString()));
+        	
             return "register";
         }
         try {
-            userService.registerNewUserAccount(userDto);
+            userService.registerNewUserAccount(user);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "register";
@@ -75,10 +89,11 @@ public class UserController {
     }
 
     @GetMapping("/user/add")
-    public String addUser(User bid) {
+    public String addUser(/*User bid*/ Model model) {
+    	model.addAttribute("user", new UserDto());
         return "user/add";
     }
-
+/*
     @PostMapping("/user/validate")
     public String validate(@Valid User user, BindingResult result, Model model) {
         if (!result.hasErrors()) {
@@ -88,6 +103,24 @@ public class UserController {
             model.addAttribute("users", userRepository.findAll());
             return "redirect:/user/list";
         }
+        return "user/add";
+    }*/
+    
+    @PostMapping("/user/validate")
+    public String validate(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
+        User OptionalUser = userService.getUserByUsername(userDto.getUsername());
+        if (OptionalUser != null) {
+            result.rejectValue("username", null, "This username is already used");
+        }
+        if (!result.hasErrors()) {
+            User user = UserMapper.convertUserDtoToUser(userDto);
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(user.getPassword()));
+            userService.saveUser(user);
+            model.addAttribute("users", UserMapper.convertUserListToUserDtoList(userService.getUsers()));
+            return "redirect:/user/list";
+        }
+        model.addAttribute("user", userDto);
         return "user/add";
     }
 

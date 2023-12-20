@@ -33,8 +33,7 @@ public class TradeService {
             existingTrade.setAccount(updatedTrade.getAccount());
             existingTrade.setType(updatedTrade.getType());
             existingTrade.setBuyQuantity(updatedTrade.getBuyQuantity());
-            // ... mettre à jour d'autres champs si nécessaire ...
-
+            
             tradeRepository.save(existingTrade);
         }
     }

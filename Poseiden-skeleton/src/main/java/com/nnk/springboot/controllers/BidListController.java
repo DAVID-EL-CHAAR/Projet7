@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 
 @Controller
@@ -27,8 +27,7 @@ public class BidListController {
 	@Autowired
 	private BidListService bidListService;
 	
-	@Autowired
-	private BidListRepository bidListRepository; // Assurez-vous d'avoir ce repository
+	
 
     /*
     @RequestMapping("/bidList/list")
@@ -42,7 +41,7 @@ public class BidListController {
 	public String home(Model model, HttpServletRequest request) {
 	    List<BidList> allBids = bidListService.findAllBids();
 	    model.addAttribute("bidLists", allBids);
-	    model.addAttribute("httpServletRequest", request); // Ajouter cette ligne
+	    model.addAttribute("httpServletRequest", request); 
 	    return "bidList/list";
 	}
 
@@ -77,17 +76,17 @@ public class BidListController {
     */
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // Récupérer le BidList par id
+        // je  Récupérer le BidList par id
         Optional<BidList> bidListOptional = bidListService.findById(id);
 
         if (bidListOptional.isPresent()) {
-            // Ajouter bidList au modèle si présent
+            // on ajoute bidList au modèle si présent
             model.addAttribute("bidList", bidListOptional.get());
         } else {
-            // Gérer le cas où le BidList n'est pas trouvé
-            // Par exemple, ajouter un message d'erreur ou rediriger
+            // je dois plus tard Gérer le cas où le BidList n'est pas trouvé
+            // Par exemple, avec un message d'erreur ou rediriger
             model.addAttribute("errorMessage", "BidList not found");
-            return "redirect:/bidList/list"; // ou une autre vue appropriée
+            return "redirect:/bidList/list"; // 
         }
 
         return "bidList/update";
@@ -125,10 +124,10 @@ public class BidListController {
     
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // Appeler le service pour supprimer le BidList par son ID
+        // j'ai Appeler le service pour supprimer le BidList par son ID
         bidListService.deleteById(id);
 
-        // Rediriger vers la liste des BidList après la suppression
+        // un return Rediriger vers la liste des BidList après la suppression
         return "redirect:/bidList/list";
     }
 

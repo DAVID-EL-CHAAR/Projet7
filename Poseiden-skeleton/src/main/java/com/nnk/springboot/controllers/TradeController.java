@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
 public class TradeController {
@@ -36,13 +36,12 @@ public class TradeController {
 
     @RequestMapping("/trade/list")
     public String home(Model model, HttpServletRequest request) {
-        // Récupérer tous les trades depuis le service
+        // JE Récupérer tous les trades depuis le service
         List<Trade> allTrades = tradeService.findAll();
 
         // Ajouter les trades et la requête HTTP au modèle pour Thymeleaf
         model.addAttribute("trades", allTrades);
-        model.addAttribute("httpServletRequest", request); // Ajouter cette ligne pour accéder à l'utilisateur connecté dans Thymeleaf
-
+        model.addAttribute("httpServletRequest", request); 
         return "trade/list";
     }
 
@@ -95,7 +94,7 @@ public class TradeController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         Trade trade = tradeService.findById(id);
         if (trade == null) {
-            // Gérer le cas où le Trade n'est pas trouvé
+            // JE Gérer le cas où le Trade n'est pas trouvé
             return "redirect:/trade/list";
         }
         model.addAttribute("trade", trade);

@@ -34,10 +34,10 @@ public class CurvePointService {
     public void updateCurvePoint(Integer id, CurvePoint updatedCurvePoint) {
         CurvePoint existingCurvePoint = curvePointRepository.findById(id).orElse(null);
         if (existingCurvePoint != null) {
-            // Mettre à jour les propriétés de existingCurvePoint avec celles de updatedCurvePoint
+            //je  Mettre à jour les propriétés de existingCurvePoint avec celles de updatedCurvePoint
             existingCurvePoint.setTerm(updatedCurvePoint.getTerm());
             existingCurvePoint.setValue(updatedCurvePoint.getValue());
-            // ... mettre à jour d'autres champs si nécessaire ...
+            
 
             curvePointRepository.save(existingCurvePoint);
         }

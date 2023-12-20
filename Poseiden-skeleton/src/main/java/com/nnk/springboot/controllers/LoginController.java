@@ -45,7 +45,7 @@ public class LoginController {
         String errorMessage = "You are not authorized for the requested data.";
 
         mav.addObject("errorMsg", errorMessage);
-        mav.addObject("httpServletRequest", request); // Ajoutez cette ligne
+        mav.addObject("httpServletRequest", request);
         mav.setViewName("403");
 
         return mav;

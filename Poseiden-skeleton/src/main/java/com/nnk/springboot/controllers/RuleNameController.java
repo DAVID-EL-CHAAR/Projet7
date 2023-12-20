@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
 public class RuleNameController {
@@ -35,12 +35,12 @@ public class RuleNameController {
 	
 	  @RequestMapping("/ruleName/list")
 	    public String home(Model model, HttpServletRequest request) {
-	        // Récupérer tous les RuleName depuis le service
+	        
 	        List<RuleName> allRuleNames = ruleNameService.findAll();
 
-	        // Ajouter les RuleName et la requête HTTP au modèle pour Thymeleaf
+	        
 	        model.addAttribute("ruleNames", allRuleNames);
-	        model.addAttribute("httpServletRequest", request); // Ajouter cette ligne pour accéder à l'utilisateur connecté dans Thymeleaf
+	        model.addAttribute("httpServletRequest", request); 
 
 	        return "ruleName/list";
 	    }
@@ -92,7 +92,7 @@ public class RuleNameController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         RuleName ruleName = ruleNameService.findById(id);
         if (ruleName == null) {
-            // Gérer le cas où le RuleName n'est pas trouvé
+           
             return "redirect:/ruleName/list";
         }
         model.addAttribute("ruleName", ruleName);
