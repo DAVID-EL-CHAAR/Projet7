@@ -21,7 +21,7 @@ public @interface ValidPassword {
      *
      * @return Le message par défaut.
      */
-    String message() default "Invalid Password";
+    String message() default "le mot de passe doit avoir au moins une lettre majuscule, au moins 8 caractères, au moins un chiffre et un symbole";
 
     /**
      * Groupes de validation auxquels cette contrainte appartient.

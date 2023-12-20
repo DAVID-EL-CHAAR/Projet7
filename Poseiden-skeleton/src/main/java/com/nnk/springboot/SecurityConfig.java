@@ -31,6 +31,9 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		
+		
 		http
 	    .authorizeHttpRequests(authz -> authz
 	        .requestMatchers("/register", "/login", "/home", "/bidList/list", "/bidList/add", "/bidList/validate").permitAll() // Autoriser sans authentification
@@ -42,7 +45,7 @@ public class SecurityConfig {
 	            .loginProcessingUrl("/login")
 	            .usernameParameter("username") 
 	            .passwordParameter("password")
-	            .defaultSuccessUrl("/home", true)
+	            .defaultSuccessUrl("/homeW", true)
 	            .failureUrl("/login?error=true")
 	            .permitAll()
 	        )
