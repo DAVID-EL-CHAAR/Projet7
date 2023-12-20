@@ -3,6 +3,8 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.CurvePoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,11 +36,17 @@ public class CurveController {
 	
 	 @RequestMapping("/curvePoint/list")
 	    public String home(Model model, HttpServletRequest request) {
+		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		    boolean isAdmin = auth.getAuthorities().stream()
+		                          .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+		    
+		    
 	        
 	        List<CurvePoint> allCurvePoints = curvePointService.findAll();
 
 	        model.addAttribute("curvePoints", allCurvePoints);
 	        model.addAttribute("httpServletRequest", request); 
+	        model.addAttribute("isAdmin", isAdmin);
 
 	        return "curvePoint/list";
 	    }

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -74,7 +75,7 @@ public class UserController {
     */
     
     @RequestMapping("admin/user/list")
-    public String adminUserList(Model model) {
+    public String adminUserList(Model model, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName(); // Récupère le nom d'utilisateur
 
@@ -84,11 +85,12 @@ public class UserController {
             throw new AccessDeniedException("Accès refusé : Vous n'êtes pas autorisé à accéder à cette page.");
         }
 
+        model.addAttribute("httpServletRequest", request); 
         model.addAttribute("users", userRepository.findAll());
         return "user/list";
     }
 
-    @GetMapping("/user/add")
+    @GetMapping("admin/user/add")
     public String addUser(/*User bid*/ Model model) {
     	model.addAttribute("user", new UserDto());
         return "user/add";
@@ -106,7 +108,7 @@ public class UserController {
         return "user/add";
     }*/
     
-    @PostMapping("/user/validate")
+    @PostMapping("admin/user/validate")
     public String validate(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
         User OptionalUser = userService.getUserByUsername(userDto.getUsername());
         if (OptionalUser != null) {
@@ -118,13 +120,13 @@ public class UserController {
             user.setPassword(encoder.encode(user.getPassword()));
             userService.saveUser(user);
             model.addAttribute("users", UserMapper.convertUserListToUserDtoList(userService.getUsers()));
-            return "redirect:/user/list";
+            return "redirect:/admin/user/list";
         }
         model.addAttribute("user", userDto);
         return "user/add";
     }
 
-    @GetMapping("/user/update/{id}")
+    @GetMapping("admin/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         user.setPassword("");
@@ -132,7 +134,7 @@ public class UserController {
         return "user/update";
     }
 
-    @PostMapping("/user/update/{id}")
+    @PostMapping("admin/user/update/{id}")
     public String updateUser(@PathVariable("id") Integer id, @Valid User user,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -144,14 +146,14 @@ public class UserController {
         user.setId(id);
         userRepository.save(user);
         model.addAttribute("users", userRepository.findAll());
-        return "redirect:/user/list";
+        return "redirect:/admin/user/list";
     }
 
-    @GetMapping("/user/delete/{id}")
+    @GetMapping("admin/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         userRepository.delete(user);
         model.addAttribute("users", userRepository.findAll());
-        return "redirect:/user/list";
+        return "redirect:/admin/user/list";
     }
 }

@@ -14,7 +14,9 @@
 			<a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
 			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
 			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
-			<a href="/ruleName/list">Rule</a>
+			<a href="/ruleName/list">Rule</a>&nbsp;|&nbsp;
+			<a href="/homeW">Home</a>&nbsp;|&nbsp;
+			<a th:if="${isAdmin}" href="/admin/user/list">User management</a>
 		</div>
 		<div class="col-6 text-right">
 			Logged in user: <b th:inline="text"  class="user"> [[${httpServletRequest.remoteUser}]] </b>

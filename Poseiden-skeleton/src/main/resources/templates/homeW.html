@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil - PayMyBuddy</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container">
+	<div class="row">
+		<div class="col-6">
+			<a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
+			<a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
+			<a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
+			<a href="/trade/list">Trade</a>&nbsp;|&nbsp;
+			<a href="/ruleName/list">Rule</a>&nbsp;|&nbsp;
+			<a th:if="${isAdmin}" href="/admin/user/list">User management</a>
+		</div>
+		<div class="col-6 text-right">
+			Logged in user: <b th:inline="text"  class="user">[[${httpServletRequest.remoteUser}]] </b>
+			<form th:action="@{/logout}" method="POST">
+				<input type="submit" value="Logout"/>
+			</form>
+		</div>
+	</div>
+ </div>
+    
+
+    <div class="container my-4">
+        <h1 class="text-center mb-3">Bienvenue chez Poseidon Capital Solutions</h1>
+        <p class="text-center mb-4">Le meilleur société financière </p>
+
+       
+        <div th:if="${user}" class="alert alert-success text-center">
+            <p>Ravi de vous retrouver, <span th:text="${user.fullname}">Nom</span> 
+        </div>
+
+        
+        
+
+        
+    </div>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+</body>
+</html>
