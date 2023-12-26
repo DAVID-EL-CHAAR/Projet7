@@ -35,6 +35,7 @@ public class SecurityConfig {
 		
 		
 		http
+		
 	    .authorizeHttpRequests(authz -> authz
 	        .requestMatchers("/register", "/login", "/home", "/bidList/list", "/bidList/add", "/bidList/validate").permitAll() // Autoriser sans authentification
 	        .requestMatchers("/admin/**").hasRole("ADMIN") // Accès restreint aux administrateurs

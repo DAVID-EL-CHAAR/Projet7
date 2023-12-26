@@ -84,8 +84,7 @@ public class BidList {
 	    @Column(name = "side")
 	    private String side;
     
-    public BidList() {
-    }
+	   
     
  // Getters et setters
     public Integer getBidListId() {

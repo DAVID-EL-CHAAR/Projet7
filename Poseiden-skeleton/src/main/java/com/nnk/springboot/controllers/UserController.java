@@ -144,7 +144,8 @@ public class UserController {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
         user.setId(id);
-        userRepository.save(user);
+        //userRepository.save(user);
+        userService.saveUser(user);
         model.addAttribute("users", userRepository.findAll());
         return "redirect:/admin/user/list";
     }

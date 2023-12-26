@@ -26,11 +26,11 @@ public class HomeController
 	
 	@RequestMapping("/home")
 	public String home(Model model) {
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	   /* Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    boolean isAdmin = auth.getAuthorities().stream()
 	                          .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 	    
-	    model.addAttribute("isAdmin", isAdmin);
+	    model.addAttribute("isAdmin", isAdmin);*/
 	    return "home";
 	}
 
