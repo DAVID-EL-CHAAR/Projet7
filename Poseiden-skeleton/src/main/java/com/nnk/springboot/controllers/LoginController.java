@@ -25,6 +25,16 @@ public class LoginController {
         return mav;
     }
     */
+    
+    /**
+     * Affiche la page de connexion.
+     * Cette méthode gère la requête pour afficher la page de connexion de l'utilisateur.
+     * Elle renvoie simplement le nom de la vue qui contient le formulaire de connexion.
+     * Aucune logique d'authentification n'est implémentée ici car cette fonctionnalité est gérée
+     * par Spring Security.
+     *
+     * @return Le nom de la vue à rendre pour la page de connexion.
+     */
 
     @GetMapping("/login")
     public String login() {

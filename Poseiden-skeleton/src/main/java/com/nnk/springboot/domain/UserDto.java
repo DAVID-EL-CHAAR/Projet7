@@ -25,7 +25,7 @@ public class UserDto {
     private String password;
     @NotEmpty(message = "FullName is mandatory")
     private String fullname;
-    @NotEmpty(message = "Role is mandatory")
+    //@NotEmpty(message = "Role is mandatory")
     private String role;
     
  // Getter and Setter for id

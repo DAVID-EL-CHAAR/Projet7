@@ -27,7 +27,18 @@ public class SecurityConfig {
 	@Autowired
     private CustomUserDetailsService userDetailsService;
 
-	 
+	
+	/**
+	 * Configure la chaîne de filtres de sécurité pour l'application.
+	 * Cette méthode définit les règles de sécurité pour les différentes requêtes HTTP, configure le processus de connexion
+	 * et de déconnexion, et associe le service de détails utilisateur pour l'authentification.
+	 * Elle spécifie quels chemins sont accessibles sans authentification, les chemins restreints aux utilisateurs ayant le rôle ADMIN,
+	 * et exige une authentification pour tous les autres chemins.
+	 *
+	 * @param http L'objet HttpSecurity pour configurer les composants de la sécurité web.
+	 * @return La chaîne de filtres de sécurité configurée.
+	 * @throws Exception Si une erreur survient durant la configuration.
+	 */
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -61,6 +72,13 @@ public class SecurityConfig {
 	}
 
 	 
+	/**
+	 * Crée et retourne un encodeur de mot de passe pour l'application.
+	 * Cette méthode instancie un BCryptPasswordEncoder qui est utilisé pour encoder et vérifier les mots de passe
+	 * dans l'application. BCrypt est un algorithme de hachage robuste pour le hashage de mot de passe.
+	 *
+	 * @return Un encodeur de mot de passe BCryptPasswordEncoder.
+	 */
 
 	    @Bean
 	    public PasswordEncoder passwordEncoder() {

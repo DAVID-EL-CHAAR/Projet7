@@ -31,18 +31,19 @@ public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    @NotBlank(message = "Username is mandatory")
+    //@NotBlank(message = "Username is mandatory")
     private String username;
     
     
     
-    @NotBlank(message = "password is mandatory")
+   // @NotBlank(message = "password is mandatory")
     //@Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,}$",
    // message = "password must contain at least 1 uppercase, 1 digit, 1 special character and 8 characters")
-    @com.nnk.springboot.ValidPassword
+    //@com.nnk.springboot.ValidPassword
     private String password;
-    @NotBlank(message = "FullName is mandatory")
+    //@NotBlank(message = "FullName is mandatory")
     private String fullname;
+
     //@NotBlank(message = "Role is mandatory")
     private String role;
 

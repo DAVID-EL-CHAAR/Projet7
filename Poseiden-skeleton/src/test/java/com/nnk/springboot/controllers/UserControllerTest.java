@@ -113,7 +113,7 @@ public class UserControllerTest {
                 .param("username", userDto.getUsername())
                 .param("fullname", userDto.getFullname())
                 .param("password", userDto.getPassword())
-                .param("role", userDto.getPassword()))
+                .param("role", userDto.getRole()))
 
         // Verify that the response status is 302 (redirect)
         .andExpect(status().is3xxRedirection())

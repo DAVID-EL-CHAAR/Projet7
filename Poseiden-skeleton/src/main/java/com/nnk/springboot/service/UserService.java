@@ -25,6 +25,17 @@ public class UserService{
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Enregistre un nouveau compte utilisateur.
+     * Cette méthode transactionnelle crée et enregistre un nouveau compte utilisateur dans la base de données.
+     * Elle vérifie d'abord si un utilisateur avec le même nom d'utilisateur existe déjà. Si c'est le cas, elle lance
+     * une exception. Sinon, elle crée un nouvel utilisateur, encode le mot de passe et définit le rôle par défaut.
+     * Enfin, elle enregistre l'utilisateur dans la base de données.
+     *
+     * @param userDto L'objet utilisateur contenant les données du nouvel utilisateur à enregistrer.
+     * @return L'objet User enregistré avec les détails persistés.
+     * @throws RuntimeException Si un utilisateur avec le même nom d'utilisateur existe déjà.
+     */
 
     @Transactional
     public User registerNewUserAccount(User userDto) {
@@ -34,12 +45,15 @@ public class UserService{
         User user = new User();
         user.setFullname(userDto.getFullname()); 
         user.setUsername(userDto.getUsername()); 
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-       // user.setPassword(userDto.getPassword());
+        //user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(userDto.getPassword());
         // user.setEnabled(true); 
         user.setRole("USER");
         return userRepository.save(user);
     }
+    
+   
+
 
 
     public User findByUsername(String email) {

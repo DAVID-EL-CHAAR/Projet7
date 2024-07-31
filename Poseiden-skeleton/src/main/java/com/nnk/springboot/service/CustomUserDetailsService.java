@@ -23,6 +23,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Charge les détails d'un utilisateur par son nom d'utilisateur.
+     * Cette méthode est une implémentation requise par l'interface UserDetailsService de Spring Security.
+     * Elle est utilisée pour récupérer les détails d'un utilisateur à partir de la base de données lors de l'authentification.
+     * Si aucun utilisateur n'est trouvé avec le nom d'utilisateur fourni, une exception UsernameNotFoundException est lancée.
+     * Cette méthode est également marquée comme transactionnelle en lecture seule, indiquant qu'elle ne modifie pas les données de la base de données.
+     *
+     * @param username Le nom d'utilisateur à rechercher dans la base de données.
+     * @return UserDetails L'objet UserDetails contenant les informations de l'utilisateur trouvé.
+     * @throws UsernameNotFoundException Si aucun utilisateur n'est trouvé avec le nom d'utilisateur spécifié.
+     */
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,3 +53,36 @@ public class CustomUserDetailsService implements UserDetailsService {
    
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
