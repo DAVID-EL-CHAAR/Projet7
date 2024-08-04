@@ -26,11 +26,7 @@ public class HomeController
 	
 	@RequestMapping("/home")
 	public String home(Model model) {
-	   /* Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	    boolean isAdmin = auth.getAuthorities().stream()
-	                          .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-	    
-	    model.addAttribute("isAdmin", isAdmin);*/
+	   
 	    return "home";
 	}
 
@@ -48,7 +44,7 @@ public class HomeController
     User user = userService.findByUsername(email);
     
     
-    // Assure que user existe
+    
     
         model.addAttribute("user", user);
         model.addAttribute("httpServletRequest", request); 

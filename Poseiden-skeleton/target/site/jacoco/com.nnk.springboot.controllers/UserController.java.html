@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.controllers</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.controllers;
+
+import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.UserDto;
+
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.nnk.springboot.repositories.UserRepository;
+import com.nnk.springboot.service.UserMapper;
+import com.nnk.springboot.service.UserService;
+import org.springframework.validation.annotation.Validated;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+
+@Controller
+<span class="fc" id="L37">public class UserController {</span>
+	
+<span class="fc" id="L39">	private static final Logger logger = LoggerFactory.getLogger(UserController.class);</span>
+	
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    
+    /**
+     * Affiche le formulaire d'inscription.
+     * Cette méthode gère la requête pour afficher le formulaire d'inscription des utilisateurs.
+     * Elle initialise un nouvel objet utilisateur vide et l'ajoute au modèle, qui est ensuite utilisé
+     * pour lier les données du formulaire lors de l'envoi.
+     *
+     * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue.
+     * @return Le nom de la vue à rendre pour la page d'inscription.
+     */
+    @GetMapping(&quot;/register&quot;)
+    public String showRegistrationForm( Model model) {
+<span class="fc" id="L65">        model.addAttribute(&quot;user&quot;, new User());</span>
+<span class="fc" id="L66">        return &quot;register&quot;;</span>
+    }
+
+    /**
+     * Traite le formulaire d'inscription de l'utilisateur.
+     * Cette méthode gère la soumission du formulaire d'inscription. Elle valide l'objet utilisateur reçu
+     * et, si la validation échoue, renvoie le formulaire avec les erreurs. Si la validation réussit, elle tente
+     * d'enregistrer le nouveau compte utilisateur. En cas d'erreur lors de l'enregistrement (comme un nom d'utilisateur
+     * déjà pris), un message d'erreur est ajouté au modèle.
+     *
+     * @param user L'objet utilisateur à enregistrer.
+     * @param result Le BindingResult qui contient les résultats de la validation et les erreurs éventuelles.
+     * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue.
+     * @return Le nom de la vue à rendre ou une redirection vers la page de connexion en cas de succès.
+     */
+    /*
+    @PostMapping(&quot;/register&quot;)
+    public String registerUserAccount(@Valid @ModelAttribute(&quot;user&quot;) User user, BindingResult result, Model model) {
+    	logger.info(&quot;Méthode handleFormSubmit appelée&quot;);
+    	if (result.hasErrors()) {
+        	logger.error(&quot;Erreurs de validation détectées :&quot;);
+            result.getAllErrors().forEach(error -&gt; logger.error(error.toString()));
+        	
+            return &quot;register&quot;;
+        }
+        try {
+            userService.registerNewUserAccount(user);
+        } catch (Exception e) {
+            model.addAttribute(&quot;errorMessage&quot;, e.getMessage());
+            return &quot;register&quot;;
+        }
+        return &quot;redirect:/login&quot;;
+    }*/
+    @PostMapping(&quot;/register&quot;)
+    public String registerUserAccount(@Valid @ModelAttribute(&quot;user&quot;) UserDto userDto, BindingResult result, Model model) {
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (result.hasErrors()) {</span>
+<span class="nc" id="L102">            return &quot;register&quot;; // Retour à la page d'inscription si erreurs de validation</span>
+        }
+
+        // Vérifier si le nom d'utilisateur existe déjà
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (userService.getUserByUsername(userDto.getUsername()) != null) {</span>
+<span class="nc" id="L107">            result.rejectValue(&quot;username&quot;, null, &quot;This username is already used&quot;);</span>
+<span class="nc" id="L108">            return &quot;register&quot;;</span>
+        }
+
+        // Convertir UserDto en User
+<span class="fc" id="L112">        User user = UserMapper.convertUserDtoToUser(userDto);</span>
+
+        // Encoder le mot de passe
+<span class="fc" id="L115">        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();</span>
+<span class="fc" id="L116">        user.setPassword(encoder.encode(userDto.getPassword()));</span>
+
+<span class="fc" id="L118">        user.setRole(&quot;USER&quot;);</span>
+        // Enregistrer l'utilisateur
+<span class="fc" id="L120">        userService.saveUser(user);</span>
+
+        // Redirection ou autre logique
+<span class="fc" id="L123">        return &quot;redirect:/login&quot;; // Rediriger vers une page de succès, par exemple</span>
+    }
+
+
+    
+   
+
+   /*
+    @RequestMapping(&quot;admin/user/list&quot;)
+    public String home(Model model)
+    {
+        model.addAttribute(&quot;users&quot;, userRepository.findAll());
+        return &quot;user/list&quot;;
+    }
+    */
+    
+    @RequestMapping(&quot;admin/user/list&quot;)
+    public String adminUserList(Model model, HttpServletRequest request) {
+<span class="nc" id="L141">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc" id="L142">        String username = authentication.getName(); // Récupère le nom d'utilisateur</span>
+
+<span class="nc" id="L144">        User user = userService.findByUsername(username); // Utilisez votre service pour obtenir les détails de l'utilisateur</span>
+
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (!&quot;ADMIN&quot;.equals(user.getRole())) {</span>
+<span class="nc" id="L147">            throw new AccessDeniedException(&quot;Accès refusé : Vous n'êtes pas autorisé à accéder à cette page.&quot;);</span>
+        }
+
+<span class="nc" id="L150">        model.addAttribute(&quot;httpServletRequest&quot;, request); </span>
+<span class="nc" id="L151">        model.addAttribute(&quot;users&quot;, userRepository.findAll());</span>
+<span class="nc" id="L152">        return &quot;user/list&quot;;</span>
+    }
+
+    @GetMapping(&quot;admin/user/add&quot;)
+    public String addUser(/*User bid*/ Model model) {
+<span class="fc" id="L157">    	model.addAttribute(&quot;user&quot;, new UserDto());</span>
+<span class="fc" id="L158">        return &quot;user/add&quot;;</span>
+    }
+/*
+    @PostMapping(&quot;/user/validate&quot;)
+    public String validate(@Valid User user, BindingResult result, Model model) {
+        if (!result.hasErrors()) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(user.getPassword()));
+            userRepository.save(user);
+            model.addAttribute(&quot;users&quot;, userRepository.findAll());
+            return &quot;redirect:/user/list&quot;;
+        }
+        return &quot;user/add&quot;;
+    }*/
+    
+    @PostMapping(&quot;admin/user/validate&quot;)
+    public String validate(@Valid @ModelAttribute(&quot;user&quot;) UserDto userDto, BindingResult result, Model model) {
+<span class="fc" id="L175">        User OptionalUser = userService.getUserByUsername(userDto.getUsername());</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        if (OptionalUser != null) {</span>
+<span class="nc" id="L177">            result.rejectValue(&quot;username&quot;, null, &quot;This username is already used&quot;);</span>
+        }
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">        if (!result.hasErrors()) {</span>
+<span class="fc" id="L180">            User user = UserMapper.convertUserDtoToUser(userDto);</span>
+<span class="fc" id="L181">            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();</span>
+<span class="fc" id="L182">            user.setPassword(encoder.encode(user.getPassword()));</span>
+<span class="fc" id="L183">            userService.saveUser(user);</span>
+<span class="fc" id="L184">            model.addAttribute(&quot;users&quot;, UserMapper.convertUserListToUserDtoList(userService.getUsers()));</span>
+<span class="fc" id="L185">            return &quot;redirect:/admin/user/list&quot;;</span>
+        }
+<span class="nc" id="L187">        model.addAttribute(&quot;user&quot;, userDto);</span>
+<span class="nc" id="L188">        return &quot;user/add&quot;;</span>
+    }
+
+    @GetMapping(&quot;admin/user/update/{id}&quot;)
+    public String showUpdateForm(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+<span class="pc" id="L193">        User user = userRepository.findById(id).orElseThrow(() -&gt; new IllegalArgumentException(&quot;Invalid user Id:&quot; + id));</span>
+<span class="fc" id="L194">        user.setPassword(&quot;&quot;);</span>
+<span class="fc" id="L195">        model.addAttribute(&quot;user&quot;, user);</span>
+<span class="fc" id="L196">        return &quot;user/update&quot;;</span>
+    }
+
+   /* @PostMapping(&quot;admin/user/update/{id}&quot;)
+    public String updateUser(@PathVariable(&quot;id&quot;) Integer id, @Valid User user,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return &quot;user/update&quot;;
+        }
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
+        user.setId(id);
+        //userRepository.save(user);
+        userService.saveUser(user);
+        model.addAttribute(&quot;users&quot;, userRepository.findAll());
+        return &quot;redirect:/admin/user/list&quot;;
+    }*/
+    
+    @PostMapping(&quot;/admin/user/update/{id}&quot;)
+    public String updateUser(@PathVariable(&quot;id&quot;) Integer id, @Valid @ModelAttribute(&quot;user&quot;) UserDto userDto, 
+                             BindingResult result, Model model) {
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">        if (result.hasErrors()) {</span>
+<span class="nc" id="L219">            return &quot;user/update&quot;;</span>
+        }
+
+        // Vérifier si le nom d'utilisateur existe déjà et s'il est différent de l'utilisateur actuel
+<span class="fc" id="L223">        User existingUser = userService.getUserByUsername(userDto.getUsername());</span>
+<span class="pc bpc" id="L224" title="3 of 4 branches missed.">        if (existingUser != null &amp;&amp; !existingUser.getId().equals(id)) {</span>
+<span class="nc" id="L225">            result.rejectValue(&quot;username&quot;, null, &quot;This username is already used&quot;);</span>
+<span class="nc" id="L226">            return &quot;user/update&quot;;</span>
+        }
+
+        // Convertir UserDto en User
+<span class="fc" id="L230">        User userToUpdate = UserMapper.convertUserDtoToUser(userDto);</span>
+<span class="fc" id="L231">        userToUpdate.setId(id); // Conserver l'ID de l'utilisateur</span>
+
+        // Encoder le mot de passe
+<span class="fc" id="L234">        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();</span>
+<span class="fc" id="L235">        userToUpdate.setPassword(encoder.encode(userDto.getPassword()));</span>
+
+        // Sauvegarder l'utilisateur mis à jour
+<span class="fc" id="L238">        userService.saveUser(userToUpdate);</span>
+<span class="fc" id="L239">        model.addAttribute(&quot;users&quot;, UserMapper.convertUserListToUserDtoList(userService.getUsers()));</span>
+<span class="fc" id="L240">        return &quot;redirect:/admin/user/list&quot;;</span>
+    }
+
+
+    @GetMapping(&quot;admin/user/delete/{id}&quot;)
+    public String deleteUser(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+<span class="pc" id="L246">        User user = userRepository.findById(id).orElseThrow(() -&gt; new IllegalArgumentException(&quot;Invalid user Id:&quot; + id));</span>
+<span class="fc" id="L247">        userRepository.delete(user);</span>
+<span class="fc" id="L248">        model.addAttribute(&quot;users&quot;, userRepository.findAll());</span>
+<span class="fc" id="L249">        return &quot;redirect:/admin/user/list&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

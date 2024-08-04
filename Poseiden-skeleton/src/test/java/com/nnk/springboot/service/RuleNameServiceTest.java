@@ -55,7 +55,7 @@ public class RuleNameServiceTest {
         RuleName updatedRuleName = new RuleName();
         updatedRuleName.setName("New Name");
         updatedRuleName.setDescription("New Description");
-        // Autres propriétés...
+        
 
         when(ruleNameRepository.findById(id)).thenReturn(Optional.of(existingRuleName));
         ruleNameService.updateRuleName(id, updatedRuleName);
@@ -63,7 +63,7 @@ public class RuleNameServiceTest {
         verify(ruleNameRepository, times(1)).save(existingRuleName);
         assertEquals("New Name", existingRuleName.getName());
         assertEquals("New Description", existingRuleName.getDescription());
-        // Vérifications pour autres propriétés...
+        
     }
 
     @Test

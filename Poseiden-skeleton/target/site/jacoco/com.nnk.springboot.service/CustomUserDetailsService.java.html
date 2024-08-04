@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomUserDetailsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.service</a> &gt; <span class="el_source">CustomUserDetailsService.java</span></div><h1>CustomUserDetailsService.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.service;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.nnk.springboot.domain.User;
+import com.nnk.springboot.repositories.UserRepository;
+
+
+
+@Service
+<span class="fc" id="L21">public class CustomUserDetailsService implements UserDetailsService {</span>
+
+    @Autowired
+    private UserRepository userRepository;
+
+    /**
+     * Charge les détails d'un utilisateur par son nom d'utilisateur.
+     * Cette méthode est une implémentation requise par l'interface UserDetailsService de Spring Security.
+     * Elle est utilisée pour récupérer les détails d'un utilisateur à partir de la base de données lors de l'authentification.
+     * Si aucun utilisateur n'est trouvé avec le nom d'utilisateur fourni, une exception UsernameNotFoundException est lancée.
+     * Cette méthode est également marquée comme transactionnelle en lecture seule, indiquant qu'elle ne modifie pas les données de la base de données.
+     *
+     * @param username Le nom d'utilisateur à rechercher dans la base de données.
+     * @return UserDetails L'objet UserDetails contenant les informations de l'utilisateur trouvé.
+     * @throws UsernameNotFoundException Si aucun utilisateur n'est trouvé avec le nom d'utilisateur spécifié.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+<span class="fc" id="L40">        User user = userRepository.findByUsername(username);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L42">            throw new UsernameNotFoundException(&quot;User not found with email: &quot; + username);</span>
+        }
+
+        // Convertir le rôle de l'utilisateur en une liste d'autorités
+<span class="fc" id="L46">        List&lt;GrantedAuthority&gt; authorities = Collections.singletonList(new SimpleGrantedAuthority(&quot;ROLE_&quot; + user.getRole().toUpperCase()));</span>
+
+<span class="fc" id="L48">        return new org.springframework.security.core.userdetails.User(user.getUsername(),</span>
+<span class="fc" id="L49">                user.getPassword(), true, true, true, true, authorities);</span>
+    }
+
+
+   
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

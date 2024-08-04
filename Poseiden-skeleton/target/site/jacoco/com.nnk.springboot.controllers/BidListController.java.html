@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BidListController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.controllers</a> &gt; <span class="el_source">BidListController.java</span></div><h1>BidListController.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.controllers;
+
+import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.repositories.BidListRepository;
+import com.nnk.springboot.service.BidListService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+import java.util.Optional;
+
+import jakarta.validation.Valid;
+
+
+@Controller
+<span class="fc" id="L27">public class BidListController {</span>
+    // TODO: Inject Bid service
+	@Autowired
+	private BidListService bidListService;
+	
+	
+
+    /*
+    @RequestMapping(&quot;/bidList/list&quot;)
+    public String home(Model model)
+    {
+        // TODO: call service find all bids to show to the view
+        return &quot;bidList/list&quot;;
+    }
+    */
+	/**
+	 * Gère la requête pour la liste des offres (bids).
+	 * Cette méthode récupère la liste des offres en utilisant un service dédié, détermine si l'utilisateur
+	 * courant a un rôle d'administrateur, et ajoute ces informations au modèle pour la vue.
+	 * 
+	 * @param model Le modèle de l'interface utilisateur utilisé pour ajouter des attributs qui seront rendus dans la vue.
+	 * @param request L'objet HttpServletRequest représentant les informations de la requête HTTP.
+	 * @return Le nom de la vue à rendre, dans ce cas, la liste des offres.
+	 */
+	@RequestMapping(&quot;/bidList/list&quot;)
+	public String home(Model model, HttpServletRequest request) {
+<span class="fc" id="L53">		Authentication auth = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="fc" id="L54">	    boolean isAdmin = auth.getAuthorities().stream()</span>
+<span class="fc" id="L55">	                          .anyMatch(authority -&gt; authority.getAuthority().equals(&quot;ROLE_ADMIN&quot;));</span>
+	    
+	    
+<span class="fc" id="L58">	    List&lt;BidList&gt; allBids = bidListService.findAllBids();</span>
+<span class="fc" id="L59">	    model.addAttribute(&quot;bidLists&quot;, allBids);</span>
+<span class="fc" id="L60">	    model.addAttribute(&quot;httpServletRequest&quot;, request); </span>
+<span class="fc" id="L61">	    model.addAttribute(&quot;isAdmin&quot;, isAdmin);</span>
+<span class="fc" id="L62">	    return &quot;bidList/list&quot;;</span>
+	}
+
+	/**
+	 * Affiche le formulaire pour ajouter une nouvelle offre.
+	 * Cette méthode renvoie simplement le nom de la vue qui contient le formulaire pour ajouter une offre.
+	 * 
+	 * @param bid L'objet BidList qui sera utilisé dans le formulaire pour soumettre une nouvelle offre.
+	 *            Il est généralement initialisé automatiquement par Spring lors de l'affichage du formulaire.
+	 * @return Le nom de la vue à rendre, dans ce cas, le formulaire d'ajout d'une offre.
+	 */
+    @GetMapping(&quot;/bidList/add&quot;)
+    public String addBidForm(BidList bid) {
+<span class="fc" id="L75">        return &quot;bidList/add&quot;;</span>
+    }
+   /*
+    @PostMapping(&quot;/bidList/validate&quot;)
+    public String validate(@Valid BidList bid, BindingResult result, Model model) {
+        // TODO: check data valid and save to db, after saving return bid list
+        return &quot;bidList/add&quot;;
+    }
+    */
+    
+    /**
+     * Traite la soumission du formulaire d'ajout ou de mise à jour d'une offre.
+     * Cette méthode valide l'objet BidList reçu et, si la validation échoue, renvoie la vue du formulaire avec les erreurs.
+     * Si la validation réussit, l'offre est enregistrée et l'utilisateur est redirigé vers la liste des offres.
+     * 
+     * @param bid L'objet BidList à valider et à enregistrer.
+     * @param result Le BindingResult qui contient les résultats de la validation et les erreurs éventuelles.
+     * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue.
+     * @return Le nom de la vue à rendre ou une redirection vers la liste des offres.
+     */
+
+    @PostMapping(&quot;/bidList/validate&quot;)
+    public String validate(@Valid BidList bid, BindingResult result, Model model) {
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (result.hasErrors()) {</span>
+<span class="nc" id="L99">            return &quot;bidList/add&quot;;</span>
+        }
+        
+<span class="fc" id="L102">        bidListService.save(bid);</span>
+<span class="fc" id="L103">        return &quot;redirect:/bidList/list&quot;; // Assurez-vous que cette route existe</span>
+    }
+
+    
+  /*  @GetMapping(&quot;/bidList/update/{id}&quot;)
+    public String showUpdateForm(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        // TODO: get Bid by Id and to model then show to the form
+        return &quot;bidList/update&quot;;
+    }
+    */
+    /**
+     * Affiche le formulaire de mise à jour pour une offre spécifique.
+     * Cette méthode recherche une offre par son identifiant. Si elle est trouvée, l'offre est ajoutée au modèle et la vue de mise à jour est retournée.
+     * Dans le cas contraire, un message d'erreur est ajouté au modèle ou une redirection est effectuée.
+     * 
+     * @param id L'identifiant de l'offre à mettre à jour.
+     * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue.
+     * @return Le nom de la vue à rendre ou une redirection si l'offre n'est pas trouvée.
+     */
+    @GetMapping(&quot;/bidList/update/{id}&quot;)
+    public String showUpdateForm(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        // je  Récupérer le BidList par id
+<span class="fc" id="L125">        Optional&lt;BidList&gt; bidListOptional = bidListService.findById(id);</span>
+
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (bidListOptional.isPresent()) {</span>
+            // on ajoute bidList au modèle si présent
+<span class="fc" id="L129">            model.addAttribute(&quot;bidList&quot;, bidListOptional.get());</span>
+        } else {
+            // je dois plus tard Gérer le cas où le BidList n'est pas trouvé
+            // Par exemple, avec un message d'erreur ou rediriger
+<span class="nc" id="L133">            model.addAttribute(&quot;errorMessage&quot;, &quot;BidList not found&quot;);</span>
+<span class="nc" id="L134">            return &quot;redirect:/bidList/list&quot;; // </span>
+        }
+
+<span class="fc" id="L137">        return &quot;bidList/update&quot;;</span>
+    }
+
+    
+    
+/*
+    @PostMapping(&quot;/bidList/update/{id}&quot;)
+    public String updateBid(@PathVariable(&quot;id&quot;) Integer id, @Valid BidList bidList,
+                             BindingResult result, Model model) {
+        // TODO: check required fields, if valid call service to update Bid and return list Bid
+        return &quot;redirect:/bidList/list&quot;;
+    }
+ */
+    
+    /**
+     * Traite la requête de mise à jour d'une offre spécifique.
+     * Cette méthode valide l'objet BidList modifié et, si la validation échoue, renvoie à la vue de mise à jour avec les erreurs.
+     * Si la validation réussit, l'offre est mise à jour dans la base de données et l'utilisateur est redirigé vers la liste des offres.
+     *
+     * @param id L'identifiant de l'offre à mettre à jour.
+     * @param bidList L'objet BidList modifié à valider et à enregistrer.
+     * @param result Le BindingResult qui contient les résultats de la validation et les erreurs éventuelles.
+     * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue.
+     * @return Le nom de la vue à rendre ou une redirection vers la liste des offres.
+     */
+    @PostMapping(&quot;/bidList/update/{id}&quot;)
+    public String updateBid(@PathVariable(&quot;id&quot;) Integer id, @Valid BidList bidList,
+                            BindingResult result, Model model) {
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">        if (result.hasErrors()) {</span>
+<span class="nc" id="L166">            return &quot;bidList/update&quot;;</span>
+        }
+
+<span class="fc" id="L169">        bidListService.update(bidList); // Mettre à jour le bidList</span>
+
+<span class="fc" id="L171">        return &quot;redirect:/bidList/list&quot;;</span>
+    }
+
+    
+   /* @GetMapping(&quot;/bidList/delete/{id}&quot;)
+    public String deleteBid(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        // TODO: Find Bid by Id and delete the bid, return to Bid list
+        return &quot;redirect:/bidList/list&quot;;
+    } */
+    
+    /**
+     * Traite la requête de suppression d'une offre spécifique.
+     * Cette méthode appelle le service pour supprimer l'offre par son identifiant.
+     * Après la suppression, elle redirige l'utilisateur vers la liste des offres.
+     *
+     * @param id L'identifiant de l'offre à supprimer.
+     * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue (non utilisé dans cette méthode).
+     * @return Une redirection vers la liste des offres après la suppression de l'offre.
+     */
+    
+    @GetMapping(&quot;/bidList/delete/{id}&quot;)
+    public String deleteBid(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        // j'ai Appeler le service pour supprimer le BidList par son ID
+<span class="fc" id="L194">        bidListService.deleteById(id);</span>
+
+        // un return Rediriger vers la liste des BidList après la suppression
+<span class="fc" id="L197">        return &quot;redirect:/bidList/list&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

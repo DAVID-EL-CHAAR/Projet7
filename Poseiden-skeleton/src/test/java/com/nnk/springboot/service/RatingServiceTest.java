@@ -68,7 +68,7 @@ public class RatingServiceTest {
         assertEquals("SandPRating", existingRating.getSandPRating());
         assertEquals("FitchRating", existingRating.getFitchRating());
         assertEquals(1, existingRating.getOrderNumber());
-        assertNotNull(result); // Maintenant, result ne devrait pas être null
+        assertNotNull(result); //result n'est plus nul
     }
 
 

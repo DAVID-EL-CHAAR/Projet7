@@ -1,7 +1,6 @@
 com\nnk\springboot\repositories\RatingRepository.class
 com\nnk\springboot\service\BidListService.class
 com\nnk\springboot\service\TradeService.class
-com\nnk\springboot\validation\ValidPassword.class
 com\nnk\springboot\Application.class
 com\nnk\springboot\controllers\RatingController.class
 com\nnk\springboot\domain\BidList.class
@@ -19,13 +18,16 @@ com\nnk\springboot\service\CustomUserDetailsService.class
 com\nnk\springboot\domain\User.class
 com\nnk\springboot\repositories\TradeRepository.class
 com\nnk\springboot\repositories\BidListRepository.class
+com\nnk\springboot\ValidPassword.class
 com\nnk\springboot\controllers\CurveController.class
 com\nnk\springboot\service\CurvePointService.class
 com\nnk\springboot\domain\Rating.class
 com\nnk\springboot\controllers\RuleNameController.class
-com\nnk\springboot\validation\PasswordConstraintValidator.class
+com\nnk\springboot\PasswordConstraintValidator.class
+com\nnk\springboot\domain\UserDto.class
 com\nnk\springboot\service\UserService.class
 com\nnk\springboot\controllers\BidListController.class
 com\nnk\springboot\repositories\CurvePointRepository.class
 com\nnk\springboot\repositories\RuleNameRepository.class
+com\nnk\springboot\service\UserMapper.class
 com\nnk\springboot\service\RuleNameService.class

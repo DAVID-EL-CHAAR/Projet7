@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot.domain</a> &gt; <span class="el_source">UserDto.java</span></div><h1>UserDto.java</h1><pre class="source lang-java linenums">package com.nnk.springboot.domain;
+
+import com.nnk.springboot.ValidPassword;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+<span class="fc" id="L16">@NoArgsConstructor</span>
+<span class="nc" id="L17">@AllArgsConstructor</span>
+public class UserDto {
+
+    private Integer id;
+    @NotEmpty(message = &quot;Username is mandatory&quot;)
+    private String username;
+    @NotEmpty(message = &quot;Password is mandatory&quot;)
+    @ValidPassword
+    private String password;
+    @NotEmpty(message = &quot;FullName is mandatory&quot;)
+    private String fullname;
+    //@NotEmpty(message = &quot;Role is mandatory&quot;)
+    private String role;
+    
+ // Getter and Setter for id
+    public Integer getId() {
+<span class="fc" id="L33">        return id;</span>
+    }
+
+    public void setId(Integer id) {
+<span class="fc" id="L37">        this.id = id;</span>
+<span class="fc" id="L38">    }</span>
+
+    // Getter and Setter for username
+    public String getUsername() {
+<span class="fc" id="L42">        return username;</span>
+    }
+
+    public void setUsername(String username) {
+<span class="fc" id="L46">        this.username = username;</span>
+<span class="fc" id="L47">    }</span>
+
+    // Getter and Setter for password
+    public String getPassword() {
+<span class="fc" id="L51">        return password;</span>
+    }
+
+    public void setPassword(String password) {
+<span class="fc" id="L55">        this.password = password;</span>
+<span class="fc" id="L56">    }</span>
+
+    // Getter and Setter for fullname
+    public String getFullname() {
+<span class="fc" id="L60">        return fullname;</span>
+    }
+
+    public void setFullname(String fullname) {
+<span class="fc" id="L64">        this.fullname = fullname;</span>
+<span class="fc" id="L65">    }</span>
+
+    // Getter and Setter for role
+    public String getRole() {
+<span class="fc" id="L69">        return role;</span>
+    }
+
+    public void setRole(String role) {
+<span class="fc" id="L73">        this.role = role;</span>
+<span class="fc" id="L74">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

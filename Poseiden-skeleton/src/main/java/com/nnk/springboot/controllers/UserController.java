@@ -1,5 +1,6 @@
 package com.nnk.springboot.controllers;
 
+
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.domain.UserDto;
 
@@ -10,26 +11,34 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.service.UserMapper;
 import com.nnk.springboot.service.UserService;
-import org.springframework.validation.annotation.Validated;
+
+
+
+//import org.springframework.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+//import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -37,7 +46,7 @@ import jakarta.validation.Valid;
 @Controller
 public class UserController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
 	
     @Autowired
     private UserRepository userRepository;
@@ -45,12 +54,14 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+   
+
+    
     @Autowired
     private UserService userService;
     
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
+   
+    
     
     /**
      * Affiche le formulaire d'inscription.
@@ -79,24 +90,7 @@ public class UserController {
      * @param model Le modèle de l'interface utilisateur pour ajouter des attributs pour la vue.
      * @return Le nom de la vue à rendre ou une redirection vers la page de connexion en cas de succès.
      */
-    /*
-    @PostMapping("/register")
-    public String registerUserAccount(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
-    	logger.info("Méthode handleFormSubmit appelée");
-    	if (result.hasErrors()) {
-        	logger.error("Erreurs de validation détectées :");
-            result.getAllErrors().forEach(error -> logger.error(error.toString()));
-        	
-            return "register";
-        }
-        try {
-            userService.registerNewUserAccount(user);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "register";
-        }
-        return "redirect:/login";
-    }*/
+    
     @PostMapping("/register")
     public String registerUserAccount(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -120,22 +114,12 @@ public class UserController {
         // Enregistrer l'utilisateur
         userService.saveUser(user);
 
-        // Redirection ou autre logique
+        // Redirection 
         return "redirect:/login"; // Rediriger vers une page de succès, par exemple
     }
 
 
-    
-   
 
-   /*
-    @RequestMapping("admin/user/list")
-    public String home(Model model)
-    {
-        model.addAttribute("users", userRepository.findAll());
-        return "user/list";
-    }
-    */
     
     @RequestMapping("admin/user/list")
     public String adminUserList(Model model, HttpServletRequest request) {
@@ -158,18 +142,7 @@ public class UserController {
     	model.addAttribute("user", new UserDto());
         return "user/add";
     }
-/*
-    @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
-        if (!result.hasErrors()) {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            userRepository.save(user);
-            model.addAttribute("users", userRepository.findAll());
-            return "redirect:/user/list";
-        }
-        return "user/add";
-    }*/
+
     
     @PostMapping("admin/user/validate")
     public String validate(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
@@ -188,6 +161,9 @@ public class UserController {
         model.addAttribute("user", userDto);
         return "user/add";
     }
+    
+
+
 
     @GetMapping("admin/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
@@ -197,21 +173,7 @@ public class UserController {
         return "user/update";
     }
 
-   /* @PostMapping("admin/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
-                             BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "user/update";
-        }
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setId(id);
-        //userRepository.save(user);
-        userService.saveUser(user);
-        model.addAttribute("users", userRepository.findAll());
-        return "redirect:/admin/user/list";
-    }*/
+ 
     
     @PostMapping("/admin/user/update/{id}")
     public String updateUser(@PathVariable("id") Integer id, @Valid @ModelAttribute("user") UserDto userDto, 

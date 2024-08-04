@@ -6,11 +6,13 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 
-//JpaSpecificationExecutor<User>
+
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>  {
 	
 	User findByUsername(String usename);
+	
+	
 
 }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-skeleton</a> &gt; <a href="index.source.html" class="el_package">com.nnk.springboot</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package com.nnk.springboot;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+
+
+import com.nnk.springboot.service.CustomUserDetailsService;
+//import com.nnk.springboot.validation.PasswordConstraintValidator;
+
+
+@EnableWebSecurity
+@Configuration
+<span class="fc" id="L28">public class SecurityConfig {</span>
+	
+	@Autowired
+    private CustomUserDetailsService userDetailsService;
+
+	
+	/**
+	 * Configure la chaîne de filtres de sécurité pour l'application.
+	 * Cette méthode définit les règles de sécurité pour les différentes requêtes HTTP, configure le processus de connexion
+	 * et de déconnexion, et associe le service de détails utilisateur pour l'authentification.
+	 * Elle spécifie quels chemins sont accessibles sans authentification, les chemins restreints aux utilisateurs ayant le rôle ADMIN,
+	 * et exige une authentification pour tous les autres chemins.
+	 *
+	 * @param http L'objet HttpSecurity pour configurer les composants de la sécurité web.
+	 * @return La chaîne de filtres de sécurité configurée.
+	 * @throws Exception Si une erreur survient durant la configuration.
+	 */
+
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		
+		
+<span class="fc" id="L51">		http</span>
+		
+<span class="fc" id="L53">	    .authorizeHttpRequests(authz -&gt; authz</span>
+<span class="fc" id="L54">	        .requestMatchers(&quot;/register&quot;, &quot;/login&quot;, &quot;/home&quot;, &quot;/bidList/list&quot;, &quot;/bidList/add&quot;, &quot;/bidList/validate&quot;).permitAll() // Autoriser sans authentification</span>
+<span class="fc" id="L55">	        .requestMatchers(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;) // Accès restreint aux administrateurs</span>
+<span class="fc" id="L56">	        .requestMatchers(&quot;/**&quot;).authenticated() // Tous les autres URL nécessitent une authentification</span>
+	    )
+<span class="fc" id="L58">	        .formLogin(form -&gt; form</span>
+<span class="fc" id="L59">	            .loginPage(&quot;/login&quot;)</span>
+<span class="fc" id="L60">	            .loginProcessingUrl(&quot;/login&quot;)</span>
+<span class="fc" id="L61">	            .usernameParameter(&quot;username&quot;) </span>
+<span class="fc" id="L62">	            .passwordParameter(&quot;password&quot;)</span>
+<span class="fc" id="L63">	            .defaultSuccessUrl(&quot;/homeW&quot;, true)</span>
+<span class="fc" id="L64">	            .failureUrl(&quot;/login?error=true&quot;)</span>
+<span class="fc" id="L65">	            .permitAll()</span>
+	        )
+<span class="fc" id="L67">	        .logout(logout -&gt; logout</span>
+<span class="fc" id="L68">	            .logoutUrl(&quot;/logout&quot;)</span>
+<span class="fc" id="L69">	            .logoutSuccessUrl(&quot;/login?logout=true&quot;)</span>
+<span class="fc" id="L70">	            .permitAll()</span>
+	        )
+<span class="fc" id="L72">	        .userDetailsService(userDetailsService);</span>
+
+<span class="fc" id="L74">	    return http.build();</span>
+	}
+
+	 
+	/**
+	 * Crée et retourne un encodeur de mot de passe pour l'application.
+	 * Cette méthode instancie un BCryptPasswordEncoder qui est utilisé pour encoder et vérifier les mots de passe
+	 * dans l'application. BCrypt est un algorithme de hachage robuste pour le hashage de mot de passe.
+	 *
+	 * @return Un encodeur de mot de passe BCryptPasswordEncoder.
+	 */
+
+	    @Bean
+	    public PasswordEncoder passwordEncoder() {
+<span class="fc" id="L88">	        return new BCryptPasswordEncoder();</span>
+	    }
+	    
+	    @Bean
+	    public LocalValidatorFactoryBean validator() {
+<span class="fc" id="L93">	        return new LocalValidatorFactoryBean();</span>
+	    }
+	    
+	    /*
+	    @Bean
+	    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) 
+	      throws Exception {
+	        return http.getSharedObject(AuthenticationManagerBuilder.class)
+	          .userDetailsService(userDetailsService)
+	          .passwordEncoder(passwordEncoder)
+	          .and()
+	          .build();
+	    } */
+	  /* @Bean
+	    public PasswordConstraintValidator passwordConstraintValidator() {
+	        return new PasswordConstraintValidator();
+	    }*/
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

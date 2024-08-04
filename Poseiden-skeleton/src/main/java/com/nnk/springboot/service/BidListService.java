@@ -25,11 +25,7 @@ public class BidListService {
     public List<BidList> findAllBids() {
         return bidListRepository.findAll();
     }
-    /*
-    public BidList findById(Integer id) {
-        return bidListRepository.findById(id).orElseThrow(() -> new RuntimeException("Bid not found"));
-    }
-    */
+   
     
     public Optional<BidList> findById(Integer id) {
         return bidListRepository.findById(id);

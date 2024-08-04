@@ -55,13 +55,12 @@ public class UserMapperTest {
         User user1 = new User();
         user1.setId(1);
         user1.setUsername("user1");
-        // Other properties...
+        
 
         User user2 = new User();
         user2.setId(2);
         user2.setUsername("user2");
-        // Other properties...
-
+       
         List<User> users = Arrays.asList(user1, user2);
         List<UserDto> userDtos = UserMapper.convertUserListToUserDtoList(users);
 

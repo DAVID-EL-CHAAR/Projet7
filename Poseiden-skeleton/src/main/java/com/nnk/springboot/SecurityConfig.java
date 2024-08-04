@@ -4,12 +4,15 @@ package com.nnk.springboot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +51,7 @@ public class SecurityConfig {
 		http
 		
 	    .authorizeHttpRequests(authz -> authz
-	        .requestMatchers("/register", "/login", "/home", "/bidList/list", "/bidList/add", "/bidList/validate").permitAll() // Autoriser sans authentification
+	        .requestMatchers("/register", "/login", "/home").permitAll() // Autoriser sans authentification
 	        .requestMatchers("/admin/**").hasRole("ADMIN") // Accès restreint aux administrateurs
 	        .requestMatchers("/**").authenticated() // Tous les autres URL nécessitent une authentification
 	    )
@@ -85,8 +88,10 @@ public class SecurityConfig {
 	        return new BCryptPasswordEncoder();
 	    }
 	    
-	  /* @Bean
-	    public PasswordConstraintValidator passwordConstraintValidator() {
-	        return new PasswordConstraintValidator();
-	    }*/
+	    @Bean
+	    public LocalValidatorFactoryBean validator() {
+	        return new LocalValidatorFactoryBean();
+	    }
+	    
+	 
 }

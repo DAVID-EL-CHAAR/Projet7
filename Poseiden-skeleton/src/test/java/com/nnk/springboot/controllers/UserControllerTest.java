@@ -69,23 +69,23 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUserAccountWithValidData() throws Exception {
-        // Create a valid user object
+        
         User user = new User();
         user.setUsername("testuser");
         user.setFullname("John Doe");
         user.setPassword("Password12@");
 
-        // Send a POST request to the /register endpoint
+        
         mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("username", user.getUsername())
                 .param("fullname", user.getFullname())
                 .param("password", user.getPassword()))
 
-        // Verify that the response status is 302 (redirect)
+        
         .andExpect(status().is3xxRedirection())
 
-        // Verify that the redirect URL is correct
+        
         .andExpect(redirectedUrl("/login"));
     }
     
@@ -100,14 +100,14 @@ public class UserControllerTest {
     
     @Test
     public void testValidateWithValidData() throws Exception {
-        // Create a valid user object
+        
         UserDto userDto = new UserDto();
         userDto.setUsername("testuser");
         userDto.setFullname("John Doe");
         userDto.setPassword("Password12@");
         userDto.setRole("user");
 
-        // Send a POST request to the /admin/user/validate endpoint
+
         mockMvc.perform(post("/admin/user/validate")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("username", userDto.getUsername())
@@ -115,41 +115,13 @@ public class UserControllerTest {
                 .param("password", userDto.getPassword())
                 .param("role", userDto.getRole()))
 
-        // Verify that the response status is 302 (redirect)
+    
         .andExpect(status().is3xxRedirection())
 
-        // Verify that the redirect URL is correct
+   
         .andExpect(redirectedUrl("/admin/user/list"));
     }
-    /*
-    @Test
-    public void testValidateWithExistingUsername() throws Exception {
-        // Create a valid user object with an existing username
-        UserDto userDto = new UserDto();
-        userDto.setUsername("existingUser");
-        userDto.setFullname("John Doe");
-        userDto.setPassword("password");
 
-        // Simulate a user already existing with the same username
-        User existingUser = new User();
-        existingUser.setUsername("existingUser");
-        existingUser.setFullname("Existing User");
-        existingUser.setPassword("existingPassword");
-        userService.saveUser(existingUser);
-
-        // Send a POST request to the /admin/user/validate endpoint
-        mockMvc.perform(post("/admin/user/validate")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("username", userDto.getUsername())
-                .param("fullname", userDto.getFullname())
-                .param("password", userDto.getPassword()))
-
-        // Verify that the response status is 200 (OK)
-        .andExpect(status().isOk())
-
-        // Verify that the response content contains the error message for the existing username
-        .andExpect(content().string("This username is already used"));
-    }*/
     
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -183,13 +155,13 @@ public class UserControllerTest {
     
     @Test
     public void testUpdateUserWithValidData() throws Exception {
-        // Create a valid user object
+        
         UserDto userDto = new UserDto();
         userDto.setUsername("updatedUser");
         userDto.setFullname("Updated User");
         userDto.setPassword("Password12@");
         userDto.setRole("user");
-        // Simulate an existing user with the given ID
+        
         User existingUser = new User();
         existingUser.setId(1);
         existingUser.setUsername("existingUser");
@@ -198,9 +170,9 @@ public class UserControllerTest {
         existingUser.setRole("user");
         userDto.setRole(existingUser.getRole());
 
-        // Send a POST request to the /admin/user/update endpoint
-        mockMvc.perform(MockMvcRequestBuilders.post("/admin/user/update/{id}", 1)// cherche pourquoi ici on utiliser le builder
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED) //savoir aussi pourquoi sa 
+        
+        mockMvc.perform(MockMvcRequestBuilders.post("/admin/user/update/{id}", 1)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED) 
                 .param("username", userDto.getUsername())
                 .param("fullname", userDto.getFullname())
                 .param("password", userDto.getPassword())
@@ -208,77 +180,16 @@ public class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/user/list"));
 
-        // Verify that the user has been updated in the database
+        
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService, times(1)).saveUser(userArgumentCaptor.capture());
         User updatedUser = userArgumentCaptor.getValue();
         assertThat(updatedUser.getUsername()).isEqualTo("updatedUser");
         assertThat(updatedUser.getFullname()).isEqualTo("Updated User");
-        assertThat(updatedUser.getPassword()).isNotEqualTo("Password12@"); // Ensure password is hashed and not plain text
+        assertThat(updatedUser.getPassword()).isNotEqualTo("Password12@"); 
     }
-    /*
-    @Test
-    public void testUpdateUserWithValidData() throws Exception {
-        // Create a valid user object
-        UserDto userDto = new UserDto();
-        userDto.setUsername("updatedUser");
-        userDto.setFullname("Updated User");
-        userDto.setPassword("Password12@");
-        userDto.setRole("user");
 
-        // Simulate an existing user with the given ID
-        User existingUser = new User();
-        existingUser.setId(1);
-        existingUser.setUsername("existingUser");
-        existingUser.setFullname("Existing User");
-        existingUser.setPassword("existingPassword12@");
-        userDto.setRole(existingUser.getRole());
-        userService.saveUser(existingUser);
 
-        // Send a POST request to the /admin/user/update endpoint
-        mockMvc.perform(post("/admin/user/update/{id}", 1)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("username", userDto.getUsername())
-                .param("fullname", userDto.getFullname())
-                .param("password", userDto.getPassword())
-                .param("role",     userDto.getRole()))
-
-        // Verify that the response status is 302 (redirect)
-        .andExpect(status().is3xxRedirection())
-
-        // Verify that the redirect URL is correct
-        .andExpect(redirectedUrl("/admin/user/list"));
-
-        // Verify that the user has been updated in the database
-        List<User> updatedUsers = userService.getUsers();
-        User updatedUser = updatedUsers.stream().filter(user -> user.getId() == 1).findFirst().get();
-        assertThat(updatedUser.getUsername()).isEqualTo("updatedUser");
-        assertThat(updatedUser.getFullname()).isEqualTo("Updated User");
-        assertThat(updatedUser.getPassword()).isNotEqualTo("Password12@"); // Ensure password is hashed and not plain text
-    } */
-
-    /*
-    @Test
-    public void testUpdateUserWithInvalidData() throws Exception {
-        // Create an invalid user object
-        UserDto userDto = new UserDto();
-        userDto.setUsername("");
-        userDto.setFullname("Invalid Fullname");
-        userDto.setPassword("");
-
-        // Send a POST request to the /admin/user/update endpoint
-        mockMvc.perform(post("/admin/user/update/{id}", 1)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("username", userDto.getUsername())
-                .param("fullname", userDto.getFullname())
-                .param("password", userDto.getPassword()))
-
-        // Verify that the response status is 200 (OK)
-        .andExpect(status().isOk())
-
-        // Verify that the response content contains the validation error messages
-        .andExpect(content().string("Please enter a username\nPlease enter a valid fullname"));
-    }*/
-    
+   
     
 }

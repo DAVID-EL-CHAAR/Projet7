@@ -64,38 +64,15 @@ public class BidlistControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(bidListController).build();
-        //SecurityContextHolder.getContext().setAuthentication(auth);
+       
     }
-    /*
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(bidListController).build();
-
-        // Créer une liste de GrantedAuthority
-        Collection<GrantedAuthority> grantedAuthorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-
-        // Configurer le mock auth pour simuler un utilisateur authentifié
-        when(auth.isAuthenticated()).thenReturn(true);
-        when(auth.getAuthorities()).thenReturn(grantedAuthorities);
-        when(auth.getName()).thenReturn("admin"); // Remplacez "admin" par le nom d'utilisateur approprié
-
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }*/
+ 
     
     @AfterEach
     public void cleanup() {
         SecurityContextHolder.clearContext();
     }
-    /*
-    @Test
-    public void testHome() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/bidList/list"))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.view().name("bidList/list"))
-            .andExpect(MockMvcResultMatchers.model().attributeExists("bidLists"))
-            .andExpect(MockMvcResultMatchers.model().attributeExists("httpServletRequest"))
-            .andExpect(MockMvcResultMatchers.model().attributeExists("isAdmin"));
-    }*/
+
     
     @Test
     public void testHomeWithAdmin() throws Exception {
@@ -129,7 +106,7 @@ public class BidlistControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(bidListController).build();
 
         // Act
-        mockMvc.perform(MockMvcRequestBuilders.get("/bidList/list"))// pourquoi request builder et pas l'autre
+        mockMvc.perform(MockMvcRequestBuilders.get("/bidList/list"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("bidList/list"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("bidLists"))
@@ -145,19 +122,7 @@ public class BidlistControllerTest {
                .andExpect(view().name("bidList/add"));
     }
 
-  /*  @Test
-    public void testValidate() throws Exception {
-        BidList bidList = new BidList();
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
 
-        mockMvc.perform(post("/bidList/validate")
-               .flashAttr("bidList", bidList))
-               .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrl("/bidList/list"));
-
-        verify(bidListService, times(1)).save(bidList);
-    }*/
     
     @Test
     public void testValidate() throws Exception {
